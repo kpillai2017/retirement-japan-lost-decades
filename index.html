@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japan Lost Decades Stress Test — Portfolio Simulation</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+</head>
+<body>
+
+    <h1>Japan "Lost Decades" stress test — 1990–2020</h1>
+    <p class="subtitle">VAS / VGS / JGB portfolio · Waterfall Rebalancing Strategy</p>
+
+    <div class="scenario-note">
+        <strong>The scenario:</strong> Applying 1990–2020 Japanese conditions to your 30/40/30 portfolio. 
+        It utilizes a <strong>"Buy the Laggard"</strong> algorithm: surplus income tops up the cash buffer first, 
+        then buys whichever asset class has fallen furthest below its target percentage.
+    </div>
+
+    <p class="section-label">Adjust your portfolio settings</p>
+    <div class="controls-top">
+        <div class="ctrl-card">
+            <div class="ctrl-label"><span>Starting portfolio</span></div>
+            <div class="ctrl-row">
+                <input type="range" min="1500000" max="4000000" step="50000" value="2400000" id="sl-port">
+                <span class="ctrl-val" id="vl-port">$2.4M</span>
+            </div>
+        </div>
+        <div class="ctrl-card">
+            <div class="ctrl-label"><span>Initial annual spend</span></div>
+            <div class="ctrl-row">
+                <input type="range" min="50000" max="150000" step="5000" value="80000" id="sl-spend">
+                <span class="ctrl-val" id="vl-spend">$80k</span>
+            </div>
+        </div>
+        <div class="ctrl-card">
+            <div class="ctrl-label"><span>Cash buffer (BILL ETF)</span></div>
+            <div class="ctrl-row">
+                <input type="range" min="0" max="600000" step="20000" value="240000" id="sl-buf">
+                <span class="ctrl-val" id="vl-buf">$240k</span>
+            </div>
+        </div>
+    </div>
+
+    <p class="section-label">Asset allocation — must total 100%</p>
+    <div class="alloc-header">
+        <div class="alloc-bar">
+            <div class="alloc-seg" id="bar-vas" style="background:#1D9E75;width:30%"></div>
+            <div class="alloc-seg" id="bar-vgs" style="background:#378ADD;width:40%"></div>
+            <div class="alloc-seg" id="bar-vaf" style="background:#EF9F27;width:30%"></div>
+        </div>
+        <span class="total-badge ok" id="total-badge">Total: 100%</span>
+    </div>
+    <div class="controls-alloc">
+        <div class="ctrl-card vas-card">
+            <div class="ctrl-label"><span class="ticker">VAS</span><span>Australian shares</span></div>
+            <div class="ctrl-row">
+                <input type="range" class="vas" min="0" max="100" step="5" value="30" id="sl-vas">
+                <span class="ctrl-val" id="vl-vas">30%</span>
+            </div>
+        </div>
+        <div class="ctrl-card vgs-card">
+            <div class="ctrl-label"><span class="ticker">VGS</span><span>International shares</span></div>
+            <div class="ctrl-row">
+                <input type="range" class="vgs" min="0" max="100" step="5" value="40" id="sl-vgs">
+                <span class="ctrl-val" id="vl-vgs">40%</span>
+            </div>
+        </div>
+        <div class="ctrl-card vaf-card">
+            <div class="ctrl-label"><span class="ticker">JGB</span><span>Japanese bonds</span></div>
+            <div class="ctrl-row">
+                <input type="range" class="vaf" min="0" max="100" step="5" value="30" id="sl-vaf">
+                <span class="ctrl-val" id="vl-vaf">30%</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="summary-grid" id="summary-grid"></div>
+
+    <div class="chart-full">
+        <div class="chart-title">Portfolio total value 1990–2020 (incl. cash buffer)</div>
+        <div class="legend-row">
+            <span class="leg"><span class="leg-dot" style="background:#378ADD"></span>Your portfolio (Rebalancing)</span>
+            <span class="leg"><span class="leg-dot" style="background:#E24B4A;opacity:0.5"></span>Pure Nikkei-only reference</span>
+            <span class="leg"><span class="leg-dot" style="background:#1D9E75;opacity:0.6"></span>Starting value</span>
+        </div>
+        <div style="position:relative;width:100%;height:350px"><canvas id="c-main"></canvas></div>
+    </div>
+
+    <div class="chart-row">
+        <div class="chart-box">
+            <div class="chart-title">Annual spend actually taken ($'000)</div>
+            <div style="position:relative;width:100%;height:220px"><canvas id="c-spend"></canvas></div>
+        </div>
+        <div class="chart-box">
+            <div class="chart-title">Cash buffer balance over time ($'000)</div>
+            <div style="position:relative;width:100%;height:220px"><canvas id="c-buf"></canvas></div>
+        </div>
+    </div>
+
+    <p class="section-label">Year-by-year detail</p>
+    <div class="tbl-wrap">
+        <table id="detail-table">
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Phase</th>
+                    <th>VAS ret.</th>
+                    <th>VGS ret.</th>
+                    <th>JGB ret.</th>
+                    <th>Portfolio value</th>
+                    <th>ETF distributions</th>
+                    <th>Cash buffer</th>
+                    <th>Total income</th>
+                    <th>Spend taken</th>
+                    <th>Reinvested (Laggard)</th>
+                    <th>Tax paid</th>
+                </tr>
+            </thead>
+            <tbody id="tbl-body"></tbody>
+        </table>
+    </div>
+
+    <p class="note" id="sim-note"></p>
+
+    <script src="script.js"></script>
+</body>
+</html>
